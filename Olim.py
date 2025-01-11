@@ -26,11 +26,19 @@ def process_data():
     cleaned_transactions = data_transactions.dropna()
     cleaned_usage = data_usage.dropna()
 
+    # Преобразование типов данных
+    numeric_columns = ["Общая задолженность (сомони)", "Объем потребления", "Сумма (сомони)"]
+    for col in numeric_columns:
+        if col in cleaned_transactions.columns:
+            cleaned_transactions[col] = pd.to_numeric(cleaned_transactions[col], errors='coerce')
+        if col in cleaned_usage.columns:
+            cleaned_usage[col] = pd.to_numeric(cleaned_usage[col], errors='coerce')
+
     # Объединение данных
     merged_data = pd.merge(cleaned_transactions, cleaned_customers, on="ID клиента", how="inner")
     merged_data = pd.merge(merged_data, cleaned_usage, on="ID клиента", how="inner")
 
-    return merged_data
+    return merged_data.dropna()
 
 # Функция для расчета Z-оценки
 def calculate_z_score(column):
@@ -59,7 +67,7 @@ def visualize_data(merged_data):
     # Тепловая карта корреляции
     st.subheader("Тепловая карта корреляции")
     fig, ax = plt.subplots(figsize=(10, 8))
-    correlation_matrix = merged_data.corr()
+    correlation_matrix = merged_data.select_dtypes(include=[np.number]).corr()
     sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", ax=ax)
     ax.set_title("Тепловая карта корреляции")
     st.pyplot(fig)
