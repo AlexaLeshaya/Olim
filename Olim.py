@@ -7,6 +7,12 @@ from sklearn.ensemble import IsolationForest
 from statsmodels.tsa.arima.model import ARIMA
 import streamlit as st
 
+# Убедимся, что openpyxl установлен
+try:
+    import openpyxl
+except ImportError:
+    raise ImportError("Необходимо установить библиотеку 'openpyxl'. Выполните команду 'pip install openpyxl'.")
+
 # Функция для обработки данных
 def process_data():
     # Загрузка данных из файла в репозитории
