@@ -8,8 +8,9 @@ from statsmodels.tsa.arima.model import ARIMA
 import streamlit as st
 
 # Функция для обработки данных
-def process_data(file_path):
-    # Загрузка данных
+def process_data():
+    # Загрузка данных из файла в репозитории
+    file_path = "Данные_Экономическая_Безопасность_Таджикистан_Полные.xlsx"
     data_customers = pd.read_excel(file_path, sheet_name="Клиенты")
     data_transactions = pd.read_excel(file_path, sheet_name="Финансовые транзакции")
     data_usage = pd.read_excel(file_path, sheet_name="Потребление ресурсов")
@@ -84,22 +85,20 @@ def calculate_risks(merged_data):
 def main():
     st.title("Модель мониторинга и реагирования на угрозы экономической безопасности ЖКХ")
 
-    # Загрузка файла
-    uploaded_file = st.file_uploader("Загрузите файл с данными", type=["xlsx"])
-    if uploaded_file:
-        merged_data = process_data(uploaded_file)
-        st.success("Данные успешно загружены и обработаны")
+    # Загрузка данных из репозитория
+    merged_data = process_data()
+    st.success("Данные успешно загружены и обработаны")
 
-        # Визуализация данных
-        visualize_data(merged_data)
+    # Визуализация данных
+    visualize_data(merged_data)
 
-        # Расчёт рисков и потерь
-        st.sidebar.header("Настройки анализа")
-        result_data = calculate_risks(merged_data)
+    # Расчёт рисков и потерь
+    st.sidebar.header("Настройки анализа")
+    result_data = calculate_risks(merged_data)
 
-        # Вывод обработанных данных
-        st.subheader("Обработанные данные")
-        st.dataframe(result_data.head())
+    # Вывод обработанных данных
+    st.subheader("Обработанные данные")
+    st.dataframe(result_data.head())
 
 if __name__ == "__main__":
     main()
